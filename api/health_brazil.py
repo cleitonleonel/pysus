@@ -14,6 +14,7 @@ BASE_URL_CAPTCHA = 'https://captcha-api.prod.saude.gov.br'
 
 
 def format_date(date):
+    print(date)
     datetime_object = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
     return datetime_object.strftime("%d/%m/%Y")
 
@@ -112,11 +113,14 @@ class SusApi(Browser):
         return text
 
     def parse_data(self):
+        print(self.response)
         result_dict = {}
         result_dict["nome"] = self.response["pessoa"].get("nome")
         result_dict["cpf"] = self.response["pessoa"].get("id")
-        result_dict["data_atualizacao"] = format_date(self.response["pessoa"].get("dataAtualizacaoRfb"))
-        result_dict["data_processamento"] = format_date(self.response["pessoa"].get("dataProcessamento"))
+        result_dict["data_atualizacao"] = format_date(self.response["pessoa"].get("dataAtualizacaoRfb")) if \
+            self.response["pessoa"].get("dataAtualizacaoRfb") else None
+        result_dict["data_processamento"] = format_date(self.response["pessoa"].get("dataProcessamento")) if \
+            self.response["pessoa"].get("dataProcessamento") else None
         result_dict["cpf"] = self.response["pessoa"].get("id")
         result_dict["situacao_cpf"] = self.response.get("tipoSituacaoCPF") if \
             self.response.get("tipoSituacaoCPF") not in (0, 2, 3, 5) else "REGULAR" if \

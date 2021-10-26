@@ -27,7 +27,7 @@ def index():
     return redirect('/api/v1/consult')
 
 
-@app.route('/api/v1/consult')
+@app.route('/api/v1/consult', methods=['GET', 'POST'])
 @app.route('/api/v1/consult/<cpf>', methods=['GET', 'POST'])
 def consult(cpf=None):
     message = "Use com moderação!"
@@ -35,7 +35,7 @@ def consult(cpf=None):
     object_data = []
     if not cpf:
         if request.method == 'POST':
-            body = json.loads(request.form["json"])
+            body = json.loads(request.get_json())
             cpf = body['cpf']
             object_data = get_data(cpf)
         elif request.method == 'GET':
