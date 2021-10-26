@@ -74,5 +74,5 @@ if __name__ == '__main__':
     post_by_data = api.post_data()
 
     print("RESULTADO MÉTODO GET VIA PARÂMETRO NA URL: ", get_direct)
-    print("RESULTADO MÉTODO GET VIA PAYLOAD: ", get_direct)
-    print("RESULTADO MÉTODO POST VIA DATA: ", get_direct)
+    print("RESULTADO MÉTODO GET VIA PAYLOAD: ", get_by_payload)
+    print("RESULTADO MÉTODO POST VIA DATA: ", post_by_data)
