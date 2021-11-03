@@ -4,6 +4,7 @@ import base64
 import requests
 import subprocess
 from datetime import datetime
+
 try:
     from PIL import Image
 except ImportError:
@@ -14,7 +15,6 @@ BASE_URL_CAPTCHA = 'https://captcha-api.prod.saude.gov.br'
 
 
 def format_date(date):
-    print(date)
     datetime_object = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
     return datetime_object.strftime("%d/%m/%Y")
 
@@ -98,22 +98,19 @@ class SusApi(Browser):
             pass
         return text
 
-    def consult_data(self, document):
+    def consult_data(self, document, attempts=5):
         self.headers = self.get_headers()
         self.headers["code"] = self.current_token
-        text = self.send_request('GET',
-                                 f"{BASE_URL}/public/scpa-usuario/validacao-cpf/{document}",
-                                 headers=self.headers,
-                                 verify=False).text
-        try:
-            self.response = json.loads(text)
-            return self.response
-        except ValueError:
-            pass
-        return text
+        for attempt in range(0, int(attempts)):
+            self.response = self.send_request('GET',
+                                              f"{BASE_URL}/public/scpa-usuario/validacao-cpf/{document}",
+                                              headers=self.headers,
+                                              verify=False).json()
+            if not isinstance(self.response, list):
+                return self.response
+        return self.response
 
     def parse_data(self):
-        print(self.response)
         result_dict = {}
         result_dict["nome"] = self.response["pessoa"].get("nome")
         result_dict["cpf"] = self.response["pessoa"].get("id")
